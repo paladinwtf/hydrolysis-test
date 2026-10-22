@@ -3,12 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PaladinBTW - Тренажер Гидролиза</title>
+    <title>PaladinBTW - Cyber Hydrolysis v2.0</title>
     <style>
+        :root {
+            --bg-color: #0b0c10;
+            --card-bg: #1f2833;
+            --text-main: #c5a1ff;
+            --text-sub: #45f3ff;
+            --border-glow: #7b2cbf;
+        }
         body {
-            font-family: 'Inter', 'Montserrat', sans-serif;
-            background-color: #ffffff;
-            color: #1a1a1a;
+            font-family: sans-serif;
+            background-color: var(--bg-color);
+            color: #ffffff;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -17,79 +24,116 @@
         }
         .container {
             width: 100%;
-            max-width: 400px;
+            max-width: 420px;
             padding: 25px;
-            background: #ffffff;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.02);
+            background: var(--card-bg);
+            border-radius: 24px;
+            border: 2px solid var(--border-glow);
+            box-shadow: 0 0 30px rgba(123, 44, 191, 0.3);
             text-align: center;
+            transition: all 0.5s ease;
         }
-        h1 { font-size: 20px; margin-bottom: 20px; font-weight: 800; }
+        h1 { 
+            font-size: 22px; 
+            margin-bottom: 20px; 
+            text-shadow: 0 0 10px var(--text-sub);
+        }
+        .label-text {
+            display: block;
+            text-align: left;
+            font-size: 12px;
+            color: var(--text-main);
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
         select {
             width: 100%;
             padding: 12px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            border: 2px solid #e1e1e1;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            background: #0b0c10;
+            color: #ffffff;
             font-size: 16px;
-            font-weight: 600;
             outline: none;
-            transition: border-color 0.3s;
+            border: 2px solid #2f3e46;
         }
-        select:focus { border-color: #00b4d8; }
         .beaker-zone {
             margin: 30px 0;
             display: flex;
             justify-content: center;
         }
         .beaker {
-            width: 120px;
-            height: 150px;
-            border: 4px solid #1a1a1a;
+            width: 130px;
+            height: 160px;
+            border: 4px solid #ffffff;
             border-top: none;
-            border-radius: 0 0 16px 16px;
+            border-radius: 0 0 24px 24px;
             position: relative;
             overflow: hidden;
         }
         .water {
             position: absolute;
             bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 70%;
+            left: -50%;
+            width: 200%;
+            height: 75%;
             background-color: #9b5de5;
+            border-radius: 38%;
             transition: background-color 0.5s ease;
+            animation: rotate-liquid 6s infinite linear;
+        }
+        @keyframes rotate-liquid {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         .info-card {
-            background: #f8f9fa;
+            background: #0b0c10;
             padding: 15px;
-            border-radius: 12px;
+            border-radius: 16px;
             text-align: left;
             font-size: 14px;
-            line-height: 1.6;
+            border: 1px solid #2f3e46;
         }
-        .info-card span { font-weight: 700; }
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid #1f2833;
+        }
         .ph-badge {
             display: inline-block;
-            padding: 4px 8px;
-            background: #1a1a1a;
-            color: #fff;
-            border-radius: 6px;
-            font-weight: 700;
+            padding: 2px 8px;
+            background: var(--text-sub);
+            color: #0b0c10;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        .equation-box {
+            margin-top: 10px;
+            background: #151a21;
+            padding: 10px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 13px;
+            color: #45f3ff;
+            border-left: 3px solid var(--text-main);
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>🧪 ТРЕНАЖЕР ГИДРОЛИЗА</h1>
+<div class="container" id="mainContainer">
+    <h1>CYBER HYDROLYSIS</h1>
     
+    <span class="label-text">Выбери соль:</span>
     <select id="saltSelect" onchange="updateSimulation()">
         <option value="NaCl">NaCl (Хлорид натрия)</option>
         <option value="Na2CO3">Na₂CO₃ (Карбонат натрия)</option>
         <option value="NH4Cl">NH₄Cl (Хлорид аммония)</option>
+        <option value="Al2S3">Al₂S₃ (Сульфид алюминия - БОСС)</option>
     </select>
 
+    <span class="label-text">Выбери индикатор:</span>
     <select id="indicatorSelect" onchange="updateSimulation()">
         <option value="litmus">Лакмус</option>
         <option value="methyl">Метилоранж</option>
@@ -103,32 +147,44 @@
     </div>
 
     <div class="info-card">
-        <div><span>Соль:</span> <span id="resName">Хлорид натрия</span></div>
-        <div><span>Тип:</span> <span id="resType">Сильное основание + Сильная кислота</span></div>
-        <div><span>Гидролиз:</span> <span id="resHydro">Не идёт</span></div>
-        <div><span>Среда:</span> <span id="resEnv">Нейтральная</span> (pH: <span id="resPH" class="ph-badge">7</span>)</div>
+        <div class="info-item"><span>Соль:</span> <span id="resName">-</span></div>
+        <div class="info-item"><span>Тип:</span> <span id="resType">-</span></div>
+        <div class="info-item"><span>Гидролиз:</span> <span id="resHydro">-</span></div>
+        <div class="info-item"><span>Среда:</span> <span><span id="resEnv">-</span> (<span id="resPH" class="ph-badge">7</span>)</span></div>
+        <div class="label-text" style="margin-top: 10px; margin-bottom: 0;">Уравнение:</div>
+        <div id="resEq" class="equation-box">-</div>
     </div>
 </div>
 
 <script>
     const db = {
-        "NaCl": { name: "Хлорид натрия", type: "Сильное основание + Сильная кислота", hydro: "Не идёт", env: "Нейтральная", ph: 7, colors: { litmus: "#9b5de5", methyl: "#f77f00", phenol: "rgba(0,0,0,0.05)" } },
-        "Na2CO3": { name: "Карбонат натрия", type: "Сильное основание + Слабая кислота", hydro: "По аниону", env: "Щелочная", ph: 10, colors: { litmus: "#00b4d8", methyl: "#fcbf49", phenol: "#ff007f" } },
-        "NH4Cl": { name: "Хлорид аммония", type: "Слабое основание + Сильная кислота", hydro: "По катиону", env: "Кислая", ph: 4, colors: { litmus: "#e63946", methyl: "#e63946", phenol: "rgba(0,0,0,0.05)" } }
+        "NaCl": { name: "Хлорид натрия", type: "Сильное осн. + Сильная кисл.", hydro: "Не идёт", env: "Нейтральная", ph: 7, eq: "Гидролиз не идет.", colors: { litmus: "#9b5de5", methyl: "#f77f00", phenol: "rgba(255,255,255,0.1)" }, glow: "#7b2cbf" },
+        "Na2CO3": { name: "Карбонат натрия", type: "Сильное осн. + Слабая кисл.", hydro: "По аниону", env: "Щелочная", ph: 10, eq: "CO3(2-) + H2O ⇄ HCO3(-) + OH(-)", colors: { litmus: "#00b4d8", methyl: "#fcbf49", phenol: "#ff007f" }, glow: "#ff007f" },
+        "NH4Cl": { name: "Хлорид аммония", type: "Слабое осн. + Сильная кисл.", hydro: "По катиону", env: "Кислая", ph: 4, eq: "NH4(+) + H2O ⇄ NH3·H2O + H(+)", colors: { litmus: "#e63946", methyl: "#e63946", phenol: "rgba(255,255,255,0.1)" }, glow: "#e63946" },
+        "Al2S3": { name: "Сульфид алюминия", type: "Слабое осн. + Слабая кисл.", hydro: "Необратимый", env: "Нейтральная", ph: 7, eq: "Al2S3 + 6H2O → 2Al(OH)3↓ + 3H2S↑", colors: { litmus: "#7b2cbf", methyl: "#f77f00", phenol: "rgba(255,255,255,0.1)" }, glow: "#ffb703" }
     };
 
     function updateSimulation() {
         const salt = document.getElementById("saltSelect").value;
         const ind = document.getElementById("indicatorSelect").value;
-        const currentData = db[salt];
+        const data = db[salt];
 
-        document.getElementById("resName").innerText = currentData.name;
-        document.getElementById("resType").innerText = currentData.type;
-        document.getElementById("resHydro").innerText = currentData.hydro;
-        document.getElementById("resEnv").innerText = currentData.env;
-        document.getElementById("resPH").innerText = currentData.ph;
+        document.getElementById("resName").innerText = data.name;
+        document.getElementById("resType").innerText = data.type;
+        document.getElementById("resHydro").innerText = data.hydro;
+        document.getElementById("resEnv").innerText = data.env;
+        document.getElementById("resPH").innerText = data.ph;
+        document.getElementById("resEq").innerText = data.eq;
 
-        document.getElementById("liquid").style.backgroundColor = currentData.colors[ind];
+        const container = document.getElementById("mainContainer");
+        container.style.borderColor = data.glow;
+        container.style.boxShadow = `0 0 35px ${data.glow}`;
+
+        const liquid = document.getElementById("liquid");
+        liquid.style.backgroundColor = data.colors[ind];
+        
+        const phBadge = document.getElementById("resPH");
+        phBadge.style.backgroundColor = data.colors[ind] !== "rgba(255,255,255,0.1)" ? data.colors[ind] : "#45f3ff";
     }
 
     updateSimulation();
