@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PaladinBTW - Тренажер Гидролиза</title>
+    <style>
+        body {
+            font-family: 'Inter', 'Montserrat', sans-serif;
+            background-color: #ffffff;
+            color: #1a1a1a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            width: 100%;
+            max-width: 400px;
+            padding: 25px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.02);
+            text-align: center;
+        }
+        h1 { font-size: 20px; margin-bottom: 20px; font-weight: 800; }
+        select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 2px solid #e1e1e1;
+            font-size: 16px;
+            font-weight: 600;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        select:focus { border-color: #00b4d8; }
+        .beaker-zone {
+            margin: 30px 0;
+            display: flex;
+            justify-content: center;
+        }
+        .beaker {
+            width: 120px;
+            height: 150px;
+            border: 4px solid #1a1a1a;
+            border-top: none;
+            border-radius: 0 0 16px 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        .water {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 70%;
+            background-color: #9b5de5;
+            transition: background-color 0.5s ease;
+        }
+        .info-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: left;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .info-card span { font-weight: 700; }
+        .ph-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            background: #1a1a1a;
+            color: #fff;
+            border-radius: 6px;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🧪 ТРЕНАЖЕР ГИДРОЛИЗА</h1>
+    
+    <select id="saltSelect" onchange="updateSimulation()">
+        <option value="NaCl">NaCl (Хлорид натрия)</option>
+        <option value="Na2CO3">Na₂CO₃ (Карбонат натрия)</option>
+        <option value="NH4Cl">NH₄Cl (Хлорид аммония)</option>
+    </select>
+
+    <select id="indicatorSelect" onchange="updateSimulation()">
+        <option value="litmus">Лакмус</option>
+        <option value="methyl">Метилоранж</option>
+        <option value="phenol">Фенолфталеин</option>
+    </select>
+
+    <div class="beaker-zone">
+        <div class="beaker">
+            <div id="liquid" class="water"></div>
+        </div>
+    </div>
+
+    <div class="info-card">
+        <div><span>Соль:</span> <span id="resName">Хлорид натрия</span></div>
+        <div><span>Тип:</span> <span id="resType">Сильное основание + Сильная кислота</span></div>
+        <div><span>Гидролиз:</span> <span id="resHydro">Не идёт</span></div>
+        <div><span>Среда:</span> <span id="resEnv">Нейтральная</span> (pH: <span id="resPH" class="ph-badge">7</span>)</div>
+    </div>
+</div>
+
+<script>
+    const db = {
+        "NaCl": { name: "Хлорид натрия", type: "Сильное основание + Сильная кислота", hydro: "Не идёт", env: "Нейтральная", ph: 7, colors: { litmus: "#9b5de5", methyl: "#f77f00", phenol: "rgba(0,0,0,0.05)" } },
+        "Na2CO3": { name: "Карбонат натрия", type: "Сильное основание + Слабая кислота", hydro: "По аниону", env: "Щелочная", ph: 10, colors: { litmus: "#00b4d8", methyl: "#fcbf49", phenol: "#ff007f" } },
+        "NH4Cl": { name: "Хлорид аммония", type: "Слабое основание + Сильная кислота", hydro: "По катиону", env: "Кислая", ph: 4, colors: { litmus: "#e63946", methyl: "#e63946", phenol: "rgba(0,0,0,0.05)" } }
+    };
+
+    function updateSimulation() {
+        const salt = document.getElementById("saltSelect").value;
+        const ind = document.getElementById("indicatorSelect").value;
+        const currentData = db[salt];
+
+        document.getElementById("resName").innerText = currentData.name;
+        document.getElementById("resType").innerText = currentData.type;
+        document.getElementById("resHydro").innerText = currentData.hydro;
+        document.getElementById("resEnv").innerText = currentData.env;
+        document.getElementById("resPH").innerText = currentData.ph;
+
+        document.getElementById("liquid").style.backgroundColor = currentData.colors[ind];
+    }
+
+    updateSimulation();
+</script>
+
+</body>
+</html>
